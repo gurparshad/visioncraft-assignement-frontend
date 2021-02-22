@@ -1,0 +1,41 @@
+.register {
+  margin-top: 70px;
+  border: 1px solid rgb(209, 198, 198);
+  width: fit-content;
+  height: fit-content;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 50px;
+  box-shadow: 5px 10px 15px rgb(211, 201, 201);
+  border-radius: 10px;
+  text-align: center;
+}
+
+.register__formGroup {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+h2 {
+  margin-bottom: 50px;
+}
+
+label {
+  width: 120px;
+  text-align: left;
+}
+
+.register__submitButton {
+  margin-bottom: 20px;
+}
+
+input {
+  width: 200px;
+}
+
+.register__error {
+  width: 300px;
+  color: red;
+  margin-top: 10px;
+  text-align: left;
+}
