@@ -2,7 +2,7 @@ import React, { FormEvent } from "react";
 import { useHistory } from "react-router-dom";
 import "./Welcome.css";
 
-export default function Welcome() {
+const Welcome: React.FC = () => {
   const history = useHistory();
 
   const handleLogout = (e: FormEvent<HTMLFormElement>) => {
@@ -21,4 +21,6 @@ export default function Welcome() {
       </form>
     </div>
   );
-}
+};
+
+export default Welcome;

@@ -6,7 +6,14 @@ import { Link, useHistory } from "react-router-dom";
 const Register: React.FC = () => {
   const history = useHistory();
 
-  const [user, setUser] = useState({
+  interface User {
+    firstName: string;
+    lastName: string;
+    email: string;
+    password: string;
+  }
+
+  const [user, setUser] = useState<User>({
     firstName: "",
     lastName: "",
     email: "",
@@ -17,11 +24,11 @@ const Register: React.FC = () => {
   const [emailError, setEmailError] = useState<string>("");
   const [passwordError, setPasswordError] = useState<string>("");
   const [lastNameError, setLastNameError] = useState<string>("");
-  const [validationError, setValidationError] = useState<boolean>(false);
+  const [validationError, setValidationError] = useState<boolean | null>(false);
 
   const submitHandler = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("button presed");
+
     const isValid: boolean = validate(user);
     if (isValid) {
       axios
@@ -35,14 +42,17 @@ const Register: React.FC = () => {
     }
   };
 
-  const validate = (user: any) => {
+  const validate = (user: User): boolean => {
     setFirstNameError("");
     setEmailError("");
     setPasswordError("");
     setLastNameError("");
     setValidationError(false);
-    const emailRegex = /\S+@\S+\.\S+/;
-    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).*$/;
+
+    // used regular expression for validation
+    const emailRegex: RegExp = /\S+@\S+\.\S+/;
+    const passwordRegex: RegExp = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).*$/;
+
     if (user.firstName === "") {
       setFirstNameError("*Please Enter the firstName");
       setValidationError(true);
@@ -83,6 +93,7 @@ const Register: React.FC = () => {
             autoComplete="true"
             data-test="firstNameInput"
           />
+
           <p className="register__error" data-test="firstNameValidationError">
             {firstNameError}
           </p>

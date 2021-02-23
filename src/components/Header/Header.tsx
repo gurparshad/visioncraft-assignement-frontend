@@ -1,7 +1,7 @@
 import React from "react";
 import logo from "./visioncraft-logo.png";
 
-export default function Header() {
+const Header: React.FC = () => {
   return (
     <nav
       data-test="header"
@@ -54,4 +54,6 @@ export default function Header() {
       </div>
     </nav>
   );
-}
+};
+
+export default Header;

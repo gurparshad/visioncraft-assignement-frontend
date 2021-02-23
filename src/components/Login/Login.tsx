@@ -3,21 +3,27 @@ import "./Login.css";
 import { Link, useHistory } from "react-router-dom";
 import axios from "axios";
 
-export default function Login() {
+const Login: React.FC = () => {
   const history = useHistory();
-  const [user, setUser] = useState({
+
+  interface User {
+    email: string;
+    password: string;
+  }
+
+  const [user, setUser] = useState<User>({
     email: "",
     password: "",
   });
 
-  const [emailError, setEmailError] = useState("");
-  const [passwordError, setPasswordError] = useState("");
+  const [emailError, setEmailError] = useState<string>("");
+  const [passwordError, setPasswordError] = useState<string>("");
   const [validationError, setValidationError] = useState<boolean>(false);
 
   const submitHandler = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const isValid = validate(user);
+    const isValid: boolean = validate(user);
 
     if (isValid) {
       try {
@@ -35,12 +41,15 @@ export default function Login() {
     }
   };
 
-  const validate = (user: any) => {
+  const validate = (user: User): boolean => {
     setEmailError("");
     setPasswordError("");
     setValidationError(false);
-    const emailRegex = /\S+@\S+\.\S+/;
-    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).*$/;
+
+    // used regular expression for validation
+    const emailRegex: RegExp = /\S+@\S+\.\S+/;
+    const passwordRegex: RegExp = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).*$/;
+
     if (!user.email.match(emailRegex)) {
       setEmailError("*Please Enter a valid Email");
       setValidationError(true);
@@ -104,4 +113,6 @@ export default function Login() {
       </p>
     </form>
   );
-}
+};
+
+export default Login;
