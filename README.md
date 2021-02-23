@@ -28,3 +28,11 @@
   "npm run test" and then press 'a'
   
   
+ ### Languages and dependencies used in the project:
+  - HTML
+  - CSS
+  - TypeScript
+  - Reacct
+  - Axios
+  - Jest
+  - Enzyme
