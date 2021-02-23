@@ -28,7 +28,7 @@
   "npm run test" and then press 'a'
   
   
- ### Languages and dependencies used in the project:
+ ### Languages and libraries used in the project:
   - HTML
   - CSS
   - TypeScript
