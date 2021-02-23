@@ -12,18 +12,23 @@ export default function Login() {
 
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
+  const [validationError, setValidationError] = useState<boolean>(false);
 
   const submitHandler = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
     const isValid = validate(user);
 
     if (isValid) {
       try {
         console.log("inside try");
-        axios.post("http://localhost:3000/user/login", user).then((data) => {
-          console.log("user is --->>", data);
-          history.push("/welcome");
-        });
+        axios
+          .post("http://localhost:3001/api/1.0/users/login", user)
+          .then((data) => {
+            console.log("user is --->>", data);
+            localStorage.setItem("user", JSON.stringify(data.data.user));
+            history.push("/welcome");
+          });
       } catch (err) {
         console.log("error is -->>", err);
       }
@@ -33,18 +38,24 @@ export default function Login() {
   const validate = (user: any) => {
     setEmailError("");
     setPasswordError("");
+    setValidationError(false);
     const emailRegex = /\S+@\S+\.\S+/;
-    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/;
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).*$/;
     if (!user.email.match(emailRegex)) {
       setEmailError("*Please Enter a valid Email");
-      return false;
-    } else if (!user.password.match(passwordRegex)) {
+      setValidationError(true);
+    }
+    if (!user.password.match(passwordRegex)) {
       setPasswordError(
         "*Password must be of lenght 8 and contain atleast one uppercase, a lowercase and a number",
       );
-      return false;
+      setValidationError(true);
     }
-    return true;
+    if (validationError === true) {
+      return false;
+    } else {
+      return true;
+    }
   };
 
   return (

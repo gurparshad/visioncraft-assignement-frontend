@@ -16,27 +16,21 @@ const Register: React.FC = () => {
   const [firstNameError, setFirstNameError] = useState<string>("");
   const [emailError, setEmailError] = useState<string>("");
   const [passwordError, setPasswordError] = useState<string>("");
-  const [error, setError] = useState<string>("");
+  const [lastNameError, setLastNameError] = useState<string>("");
+  const [validationError, setValidationError] = useState<boolean>(false);
 
   const submitHandler = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
     const isValid: boolean = validate(user);
     if (isValid) {
-      axios
-        .post("http://localhost:3000/user/register", user)
+      await axios
+        .post("http://localhost:3001/api/1.0/users/register", user)
         .then((data) => {
-          console.log("user is --->>", data);
+          localStorage.setItem("user", JSON.stringify(data.data.user));
           history.push("/welcome");
         })
         .catch((error) => {
-          if (error.response.status === 500) {
-            setEmailError("*The email already exists");
-          } else {
-            setError(
-              "We can't serve your request at the moment. Please Try again later",
-            );
-          }
+          // console.log(error);
         });
     }
   };
@@ -45,25 +39,37 @@ const Register: React.FC = () => {
     setFirstNameError("");
     setEmailError("");
     setPasswordError("");
+    setLastNameError("");
+    setValidationError(false);
     const emailRegex = /\S+@\S+\.\S+/;
-    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/;
-    if (user.firstName == "") {
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).*$/;
+    if (user.firstName === "") {
       setFirstNameError("*Please Enter the firstName");
-      return false;
-    } else if (!user.email.match(emailRegex)) {
+      setValidationError(true);
+    }
+    if (user.lastName === "") {
+      setLastNameError("*Please Enter the lastName");
+      setValidationError(true);
+    }
+    if (!user.email.match(emailRegex)) {
       setEmailError("*Please Enter a valid Email");
-      return false;
-    } else if (!user.password.match(passwordRegex)) {
+      setValidationError(true);
+    }
+    if (!user.password.match(passwordRegex)) {
       setPasswordError(
         "*Password must be of lenght 8 and contain atleast one uppercase, a lowercase and a number",
       );
-      return false;
+      setValidationError(true);
     }
-    return true;
+    if (validationError === true) {
+      return false;
+    } else {
+      return true;
+    }
   };
 
   return (
-    <form onSubmit={submitHandler} className="register">
+    <form onSubmit={submitHandler} className="register" data-test="register">
       <div className="register__formInner">
         <h2>Register Here</h2>
         <div className="register__formGroup">
@@ -75,8 +81,11 @@ const Register: React.FC = () => {
             onChange={(e) => setUser({ ...user, firstName: e.target.value })}
             value={user.firstName}
             autoComplete="true"
+            data-test="firstNameInput"
           />
-          <p className="register__error">{firstNameError}</p>
+          <p className="register__error" data-test="firstNameValidationError">
+            {firstNameError}
+          </p>
         </div>
         <div className="register__formGroup">
           <label htmlFor="lastName">Last Name:</label>
@@ -87,7 +96,11 @@ const Register: React.FC = () => {
             onChange={(e) => setUser({ ...user, lastName: e.target.value })}
             value={user.lastName}
             autoComplete="true"
+            data-test="lastNameInput"
           />
+          <p className="register__error" data-test="lastNameValidationError">
+            {lastNameError}
+          </p>
         </div>
         <div className="register__formGroup">
           <label htmlFor="email">Email:</label>
@@ -98,8 +111,11 @@ const Register: React.FC = () => {
             onChange={(e) => setUser({ ...user, email: e.target.value })}
             value={user.email}
             autoComplete="true"
+            data-test="emailInput"
           />
-          <p className="register__error">{emailError}</p>
+          <p className="register__error" data-test="emailValidationError">
+            {emailError}
+          </p>
         </div>
         <div className="register__formGroup">
           <label htmlFor="password">Password:</label>
@@ -109,14 +125,17 @@ const Register: React.FC = () => {
             id="password"
             onChange={(e) => setUser({ ...user, password: e.target.value })}
             value={user.password}
+            data-test="passwordInput"
           />
-          <p className="register__error">{passwordError}</p>
+          <p className="register__error" data-test="passwordValidationError">
+            {passwordError}
+          </p>
         </div>
-        {error === "" ? null : <p>{error}</p>}
         <input
           className="register__submitButton btn btn-primary"
           type="submit"
           value="Submit"
+          data-test="submitInput"
         />
         <div>
           <p className="register__loginParagraph">
