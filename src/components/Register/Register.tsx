@@ -28,6 +28,9 @@ const Register: React.FC = () => {
   const [confirmPasswordError, setConfirmPasswordError] = useState<string>("");
   const [lastNameError, setLastNameError] = useState<string>("");
   const [validationError, setValidationError] = useState<boolean | null>(false);
+  const [registerError, setRegisterError] = useState<boolean>(false);
+
+  const registerErrorMsg: string = "Email already in use, try login";
 
   const submitHandler = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -41,7 +44,11 @@ const Register: React.FC = () => {
           localStorage.setItem("user", JSON.stringify(data.data.user));
           history.push("/welcome");
         })
-        .catch((error) => {});
+        .catch((err) => {
+          if (err.response.status === 400) {
+            setRegisterError(true);
+          }
+        });
     }
   };
 
@@ -59,10 +66,16 @@ const Register: React.FC = () => {
     if (user.firstName === "") {
       setFirstNameError("*Please Enter the firstName");
       setValidationError(true);
+    } else if (user.firstName.length < 3) {
+      setFirstNameError("*firstName must be of atleast 3 characters");
+      setValidationError(true);
     }
 
     if (user.lastName === "") {
       setLastNameError("*Please Enter the lastName");
+      setValidationError(true);
+    } else if (user.lastName.length < 3) {
+      setLastNameError("*lastName must be of atleast 3 characters");
       setValidationError(true);
     }
 
@@ -80,7 +93,7 @@ const Register: React.FC = () => {
 
     if (user.password !== user.confirmPassword) {
       setConfirmPasswordError(
-        "*Password and confirm password fiedls must be same",
+        "*Password and confirm password fields must be same",
       );
       setValidationError(true);
       console.log("validation error ----->>>>>", validationError);
@@ -160,7 +173,7 @@ const Register: React.FC = () => {
         </div>
 
         <div className="register__formGroup">
-          <label htmlFor="confirmPassword">confirm Password:</label>
+          <label htmlFor="confirmPassword">Confirm Password:</label>
           <input
             type="password"
             name="confirmPassword"
@@ -172,6 +185,7 @@ const Register: React.FC = () => {
           />
           <p className="register__error">{confirmPasswordError}</p>
         </div>
+        {registerError && <p className="register__error">{registerErrorMsg}</p>}
         <input
           className="register__submitButton btn btn-primary"
           type="submit"

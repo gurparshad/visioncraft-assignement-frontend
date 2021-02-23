@@ -21,7 +21,7 @@ h2 {
 }
 
 label {
-  width: 120px;
+  width: 150px;
   text-align: left;
 }
 
@@ -34,7 +34,7 @@ input {
 }
 
 .register__error {
-  width: 300px;
+  width: 350px;
   color: red;
   margin-top: 10px;
   text-align: left;

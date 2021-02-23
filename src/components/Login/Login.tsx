@@ -19,25 +19,28 @@ const Login: React.FC = () => {
   const [emailError, setEmailError] = useState<string>("");
   const [passwordError, setPasswordError] = useState<string>("");
   const [validationError, setValidationError] = useState<boolean>(false);
+  const [loginError, setLoginError] = useState<boolean>(false);
+
+  const loginErrorMsg: string = "User does not exist, please register";
 
   const submitHandler = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setLoginError(true);
 
     const isValid: boolean = validate(user);
 
     if (isValid) {
-      try {
-        console.log("inside try");
-        axios
-          .post("http://localhost:3001/api/1.0/users/login", user)
-          .then((data) => {
-            console.log("user is --->>", data);
-            localStorage.setItem("user", JSON.stringify(data.data.user));
-            history.push("/welcome");
-          });
-      } catch (err) {
-        console.log("error is -->>", err);
-      }
+      axios
+        .post("http://localhost:3001/api/1.0/users/login", user)
+        .then((data) => {
+          localStorage.setItem("user", JSON.stringify(data.data.user));
+          history.push("/welcome");
+        })
+        .catch((err) => {
+          if (err.response.status === 400) {
+            setLoginError(true);
+          }
+        });
     }
   };
 
@@ -99,6 +102,7 @@ const Login: React.FC = () => {
           {passwordError}
         </p>
       </div>
+      {loginError && <p className="register__error">{loginErrorMsg}</p>}
       <input
         className="login__submitButton btn btn-primary"
         type="submit"
