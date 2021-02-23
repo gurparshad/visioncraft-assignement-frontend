@@ -59,7 +59,7 @@ export default function Login() {
   };
 
   return (
-    <form onSubmit={submitHandler} className="login">
+    <form onSubmit={submitHandler} className="login" data-test="login">
       <h2>Login Here</h2>
       <div className="login__formGroup">
         <label htmlFor="email">Email:</label>
@@ -70,8 +70,11 @@ export default function Login() {
           onChange={(e) => setUser({ ...user, email: e.target.value })}
           value={user.email}
           autoComplete="true"
+          data-test="emailInput"
         />
-        <p className="register__error">{emailError}</p>
+        <p className="register__error" data-test="emailValidationError">
+          {emailError}
+        </p>
       </div>
       <div className="login__formGroup">
         <label htmlFor="password">Password:</label>
@@ -81,13 +84,17 @@ export default function Login() {
           id="password"
           onChange={(e) => setUser({ ...user, password: e.target.value })}
           value={user.password}
+          data-test="passwordInput"
         />
-        <p className="register__error">{passwordError}</p>
+        <p className="register__error" data-test="passwordValidationError">
+          {passwordError}
+        </p>
       </div>
       <input
         className="login__submitButton btn btn-primary"
         type="submit"
         value="Login"
+        data-test="submitInput"
       />
       <p className="register__loginPara">
         Don't have an account{" "}

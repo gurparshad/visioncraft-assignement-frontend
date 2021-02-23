@@ -7,15 +7,16 @@ export default function Welcome() {
 
   const handleLogout = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    history.push("/");
+    localStorage.clear();
+    history.push("/login");
   };
 
   return (
-    <div className="welcome">
+    <div className="welcome" data-test="welcome">
       <h2>
-        <span>Hello </span>
+        <span>Welcome to VisionCraft </span>
       </h2>
-      <form onSubmit={handleLogout}>
+      <form onSubmit={handleLogout} data-test="welcomeForm">
         <input type="submit" value="logout" />
       </form>
     </div>

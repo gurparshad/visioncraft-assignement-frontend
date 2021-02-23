@@ -28,10 +28,10 @@ describe("Register component", () => {
     const wrapper = shallow(<Register />);
     let firstNameInput = wrapper.find("input").first();
     firstNameInput.simulate("change", {
-      target: { value: "jack" },
+      target: { value: "testUser" },
     });
     firstNameInput = wrapper.find("input").first();
-    expect(firstNameInput.props().value).toEqual("jack");
+    expect(firstNameInput.props().value).toEqual("testUser");
   });
 
   it("lets user fill out the registration form", () => {
