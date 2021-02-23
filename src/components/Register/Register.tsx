@@ -2,6 +2,7 @@ import React, { FormEvent, useState } from "react";
 import "./Register.css";
 import axios from "axios";
 import { Link, useHistory } from "react-router-dom";
+import { authentication } from "../../App";
 
 const Register: React.FC = () => {
   const history = useHistory();
@@ -27,7 +28,6 @@ const Register: React.FC = () => {
   const [passwordError, setPasswordError] = useState<string>("");
   const [confirmPasswordError, setConfirmPasswordError] = useState<string>("");
   const [lastNameError, setLastNameError] = useState<string>("");
-  const [validationError, setValidationError] = useState<boolean | null>(false);
   const [registerError, setRegisterError] = useState<boolean>(false);
 
   const registerErrorMsg: string = "Email already in use, try login";
@@ -35,13 +35,15 @@ const Register: React.FC = () => {
   const submitHandler = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const isValid: boolean = validate(user);
+    let isValid: boolean = false;
+    isValid = validate(user);
     if (isValid) {
-      axios
+      console.log("inside the if isValid");
+      await axios
         .post("http://localhost:3001/api/1.0/users/register", user)
         .then((data) => {
-          console.log("user is --->>", data.data.user);
           localStorage.setItem("user", JSON.stringify(data.data.user));
+          authentication.onAuthentication();
           history.push("/welcome");
         })
         .catch((err) => {
@@ -57,49 +59,50 @@ const Register: React.FC = () => {
     setEmailError("");
     setPasswordError("");
     setLastNameError("");
-    setValidationError(false);
 
     // used regular expression for validation
     const emailRegex: RegExp = /\S+@\S+\.\S+/;
     const passwordRegex: RegExp = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).*$/;
 
+    let validationError: boolean = false;
+
     if (user.firstName === "") {
       setFirstNameError("*Please Enter the firstName");
-      setValidationError(true);
+      validationError = true;
     } else if (user.firstName.length < 3) {
       setFirstNameError("*firstName must be of atleast 3 characters");
-      setValidationError(true);
+      validationError = true;
     }
 
     if (user.lastName === "") {
       setLastNameError("*Please Enter the lastName");
-      setValidationError(true);
+      validationError = true;
     } else if (user.lastName.length < 3) {
       setLastNameError("*lastName must be of atleast 3 characters");
-      setValidationError(true);
+      validationError = true;
     }
 
     if (!user.email.match(emailRegex)) {
       setEmailError("*Please Enter a valid Email");
-      setValidationError(true);
+      validationError = true;
     }
 
     if (!user.password.match(passwordRegex)) {
       setPasswordError(
         "*Password must be of lenght 8 and contain atleast one uppercase, a lowercase and a number",
       );
-      setValidationError(true);
+      validationError = true;
     }
 
     if (user.password !== user.confirmPassword) {
       setConfirmPasswordError(
         "*Password and confirm password fields must be same",
       );
-      setValidationError(true);
-      console.log("validation error ----->>>>>", validationError);
+      validationError = true;
     }
 
     if (validationError === true) {
+      console.log("here here", validationError);
       return false;
     } else {
       return true;
@@ -194,7 +197,7 @@ const Register: React.FC = () => {
         />
         <div>
           <p className="register__loginParagraph">
-            Already have an account{" "}
+            Already have an account
             <span>
               <Link to="/login">Login</Link>
             </span>

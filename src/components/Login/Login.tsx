@@ -2,6 +2,7 @@ import React, { FormEvent, useState } from "react";
 import "./Login.css";
 import { Link, useHistory } from "react-router-dom";
 import axios from "axios";
+import { authentication } from "../../App";
 
 const Login: React.FC = () => {
   const history = useHistory();
@@ -18,22 +19,21 @@ const Login: React.FC = () => {
 
   const [emailError, setEmailError] = useState<string>("");
   const [passwordError, setPasswordError] = useState<string>("");
-  const [validationError, setValidationError] = useState<boolean>(false);
   const [loginError, setLoginError] = useState<boolean>(false);
 
   const loginErrorMsg: string = "User does not exist, please register";
 
   const submitHandler = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setLoginError(true);
 
-    const isValid: boolean = validate(user);
+    let isValid: boolean = validate(user);
 
     if (isValid) {
       axios
         .post("http://localhost:3001/api/1.0/users/login", user)
         .then((data) => {
           localStorage.setItem("user", JSON.stringify(data.data.user));
+          authentication.onAuthentication();
           history.push("/welcome");
         })
         .catch((err) => {
@@ -47,7 +47,8 @@ const Login: React.FC = () => {
   const validate = (user: User): boolean => {
     setEmailError("");
     setPasswordError("");
-    setValidationError(false);
+
+    let validationError: boolean = false;
 
     // used regular expression for validation
     const emailRegex: RegExp = /\S+@\S+\.\S+/;
@@ -55,13 +56,13 @@ const Login: React.FC = () => {
 
     if (!user.email.match(emailRegex)) {
       setEmailError("*Please Enter a valid Email");
-      setValidationError(true);
+      validationError = true;
     }
     if (!user.password.match(passwordRegex)) {
       setPasswordError(
         "*Password must be of lenght 8 and contain atleast one uppercase, a lowercase and a number",
       );
-      setValidationError(true);
+      validationError = true;
     }
     if (validationError === true) {
       return false;
