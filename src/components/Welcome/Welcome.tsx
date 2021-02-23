@@ -14,7 +14,7 @@ const Welcome: React.FC = () => {
   return (
     <div className="welcome" data-test="welcome">
       <h2>
-        <span>Welcome to VisionCraft </span>
+        <span>Yay! Welcome to VisionCraft </span>
       </h2>
       <form onSubmit={handleLogout} data-test="welcomeForm">
         <input type="submit" value="logout" />

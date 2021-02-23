@@ -11,6 +11,7 @@ const Register: React.FC = () => {
     lastName: string;
     email: string;
     password: string;
+    confirmPassword: string;
   }
 
   const [user, setUser] = useState<User>({
@@ -18,11 +19,13 @@ const Register: React.FC = () => {
     lastName: "",
     email: "",
     password: "",
+    confirmPassword: "",
   });
 
   const [firstNameError, setFirstNameError] = useState<string>("");
   const [emailError, setEmailError] = useState<string>("");
   const [passwordError, setPasswordError] = useState<string>("");
+  const [confirmPasswordError, setConfirmPasswordError] = useState<string>("");
   const [lastNameError, setLastNameError] = useState<string>("");
   const [validationError, setValidationError] = useState<boolean | null>(false);
 
@@ -57,20 +60,32 @@ const Register: React.FC = () => {
       setFirstNameError("*Please Enter the firstName");
       setValidationError(true);
     }
+
     if (user.lastName === "") {
       setLastNameError("*Please Enter the lastName");
       setValidationError(true);
     }
+
     if (!user.email.match(emailRegex)) {
       setEmailError("*Please Enter a valid Email");
       setValidationError(true);
     }
+
     if (!user.password.match(passwordRegex)) {
       setPasswordError(
         "*Password must be of lenght 8 and contain atleast one uppercase, a lowercase and a number",
       );
       setValidationError(true);
     }
+
+    if (user.password !== user.confirmPassword) {
+      setConfirmPasswordError(
+        "*Password and confirm password fiedls must be same",
+      );
+      setValidationError(true);
+      console.log("validation error ----->>>>>", validationError);
+    }
+
     if (validationError === true) {
       return false;
     } else {
@@ -128,6 +143,7 @@ const Register: React.FC = () => {
             {emailError}
           </p>
         </div>
+
         <div className="register__formGroup">
           <label htmlFor="password">Password:</label>
           <input
@@ -141,6 +157,20 @@ const Register: React.FC = () => {
           <p className="register__error" data-test="passwordValidationError">
             {passwordError}
           </p>
+        </div>
+
+        <div className="register__formGroup">
+          <label htmlFor="confirmPassword">confirm Password:</label>
+          <input
+            type="password"
+            name="confirmPassword"
+            id="confirmPassword"
+            onChange={(e) =>
+              setUser({ ...user, confirmPassword: e.target.value })
+            }
+            value={user.confirmPassword}
+          />
+          <p className="register__error">{confirmPasswordError}</p>
         </div>
         <input
           className="register__submitButton btn btn-primary"
