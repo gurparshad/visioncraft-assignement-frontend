@@ -21,17 +21,17 @@ const Register: React.FC = () => {
 
   const submitHandler = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    console.log("button presed");
     const isValid: boolean = validate(user);
     if (isValid) {
-      await axios
+      axios
         .post("http://localhost:3001/api/1.0/users/register", user)
         .then((data) => {
+          console.log("user is --->>", data.data.user);
           localStorage.setItem("user", JSON.stringify(data.data.user));
           history.push("/welcome");
         })
-        .catch((error) => {
-          // console.log(error);
-        });
+        .catch((error) => {});
     }
   };
 
