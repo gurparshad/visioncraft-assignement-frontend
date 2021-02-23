@@ -59,6 +59,7 @@ const Register: React.FC = () => {
     setEmailError("");
     setPasswordError("");
     setLastNameError("");
+    setConfirmPasswordError("");
 
     // used regular expression for validation
     const emailRegex: RegExp = /\S+@\S+\.\S+/;
