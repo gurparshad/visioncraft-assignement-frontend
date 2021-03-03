@@ -21,10 +21,11 @@ const Login: React.FC = () => {
   const [passwordError, setPasswordError] = useState<string>("");
   const [loginError, setLoginError] = useState<boolean>(false);
 
-  const loginErrorMsg: string = "User does not exist, please register";
+  let loginErrorMsg: string = "User with given credentials does not exist";
 
   const submitHandler = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setLoginError(false);
 
     let isValid: boolean = validate(user);
 
